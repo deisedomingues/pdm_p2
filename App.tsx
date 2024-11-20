@@ -1,60 +1,65 @@
 import {
+  useState
+} from 'react';
+
+import {
   FlatList,
+  Image,
   Pressable,
   StyleSheet,
   Text,
   View
-  } from 'react-native';
+} from 'react-native';
 
-import {
-  useState
-  } from 'react';
-
-import {
-  CAT_API
-  } from 'react-native-dotenv';
+export default function App() {
+  const [gatinho, setGatinho] = useState([]);
 
   
-  export default function App() {
-    const { CAT_API } = process.env;
-    const [gatinho, setGatinho] = useState<Gatos[]>([]);
+  const fetchGatos = async () => {
+    const response = await fetch('https://api.thecatapi.com/v1/images/search?limit=5');
+    const data = await response.json();
+    setGatinho(prevGatinhos => [...prevGatinhos, ...data]);
+  };  
+
+  
+  const handlePress = () => {
+    fetchGatos();  
+  };
 
   return (
-
     <View style={styles.container}>
 
-      <Pressable
-      style={styles.button}>
-        <Text
-          style={styles.buttonText}>
-            Ver mais gatinhos
-        </Text>
+      <Pressable style={styles.button} onPress={handlePress}>
+        <Text style={styles.buttonText}>Ver mais gatinhos</Text>
       </Pressable>
-      
+     
     </View>
   );
-  }
+}
 
-
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-  flex: 1,
-  backgroundColor: '#fff',
-  alignItems: 'center',
-  justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
   },
-
   button: {
-    width: '10%',
-    backgroundColor: '#0096F3', //material design blue 500
+    width: '80%',
+    backgroundColor: '#0096F3', // Material design blue 500
     padding: 12,
-    borderRadius: 4
+    borderRadius: 4,
+    marginBottom: 20,
   },
-
   buttonText: {
     color: 'white',
-    textAlign: 'center'
-  }
-
-  });
-  
+    textAlign: 'center',
+  },
+  image: {
+    width: 300,  
+    height: 200,
+    marginBottom: 10,
+    borderRadius: 8,
+  },
+});
